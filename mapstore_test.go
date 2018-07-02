@@ -13,15 +13,15 @@ var addFieldValue interface{}
 
 func TestNewTable(t *testing.T) {
 	filePath := "/tmp/" + makeuuid() + ".json"
-	_, ok := NewTable(filePath) // test creation of new table storage file
-	if !ok {
-		t.Errorf("TestInit: refused to create file '%s'", filePath)
+	_, err := NewTable(filePath) // test creation of new table storage file
+	if err != nil {
+		t.Errorf("TestInit: refused to create file '%s' - '%s'", filePath, err.Error())
 	}
 	// read the test data for the rest of the test cases
 	filePath = "./testdata/testdata.json"
-	myTable, ok = NewTable(filePath) // myTable is global
-	if !ok {
-		t.Errorf("TestNewTable: Table object create failed using filePath '%s'", filePath)
+	myTable, err = NewTable(filePath) // myTable is global
+	if err != nil {
+		t.Errorf("TestNewTable: Table object create failed using filePath '%s' - '%s'", filePath, err.Error())
 	}
 }
 
@@ -96,8 +96,8 @@ func TestQuery(t *testing.T) {
 }
 
 func TestCommit(t *testing.T) {
-	ok := myTable.CommitTable()
-	if !ok {
-		t.Errorf("TestCommit: failed to write '%s'.", myTable.filePath)
+	err := myTable.CommitTable()
+	if err != nil {
+		t.Errorf("TestCommit: failed to write '%s' - '%s'.", myTable.filePath, err.Error())
 	}
 }

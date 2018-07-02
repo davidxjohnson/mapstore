@@ -18,23 +18,23 @@ type Table struct {
 }
 
 // NewTable function reads data from disk into new Table object
-func NewTable(filePath string) (t Table, ok bool) {
-	if _, err := os.Stat(filePath); os.IsNotExist(err) { // path/to/whatever does not exist
+func NewTable(filePath string) (t Table, err error) {
+	if _, err = os.Stat(filePath); os.IsNotExist(err) { // path/to/whatever does not exist
 		t.filePath = filePath
 		t.Rows = map[string]Row{}
-		ok = t.CommitTable()
+		err = t.CommitTable()
 		return
 	}
-	ok = readJSON(&t, filePath)
-	if ok {
+	err = readJSON(&t, filePath)
+	if err == nil {
 		t.filePath = filePath
 	}
 	return
 }
 
 // CommitTable method writes entire datastore to disk
-func (t Table) CommitTable() (ok bool) {
-	ok = writeJSON(t, t.filePath) // marshal and write to disk
+func (t Table) CommitTable() (err error) {
+	err = writeJSON(t, t.filePath) // marshal and write to disk
 	return
 }
 

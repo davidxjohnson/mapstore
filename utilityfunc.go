@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 )
 
@@ -18,52 +17,35 @@ func makeuuid() (uuid string) {
 }
 
 // readJSON function gets data from a file into a structure
-func readJSON(returnData interface{}, path string) (ok bool) {
-	rawData, ok := readFileStream(path)
-	// convert the raw data into the structure passed by reference to this function
-	err := json.Unmarshal(rawData, returnData)
+func readJSON(returnData interface{}, path string) (err error) {
+	rawData, err := readFileStream(path)
 	if err != nil {
-		log.Print("readJSON Unmarshal: " + err.Error())
-		ok = false
+		return
 	}
+	// convert the raw data into the structure passed by reference to this function
+	err = json.Unmarshal(rawData, returnData)
 	return
 }
 
 // writeJSON function puts data from structure to file
-func writeJSON(sourceData interface{}, path string) (ok bool) {
+func writeJSON(sourceData interface{}, path string) (err error) {
 	rawData, err := json.Marshal(sourceData)
 	if err != nil {
-		log.Print("writeJSON Marshal: '" + path + "' " + err.Error())
-		ok = false
 		return
 	}
 	err = ioutil.WriteFile(path, rawData, 0644)
-	if err != nil {
-		log.Print("writeJSON WriteFile: '" + path + "' " + err.Error())
-		ok = false
-		return
-	}
-	ok = true
 	return
 }
 
 // readFileStream function returns a stream of bytes from a file, or bails if unable
-func readFileStream(filePath string) (rawData []byte, ok bool) {
+func readFileStream(filePath string) (rawData []byte, err error) {
 	// Open file
 	fileHandle, err := os.Open(filePath)
 	if err != nil {
-		ok = false
-		log.Print("readFileStream: " + err.Error())
 		return
 	}
 	defer fileHandle.Close() // closed this later
 	// Read file
 	rawData, err = ioutil.ReadAll(fileHandle)
-	if err != nil { // nearly impossible to throw this error and just as hard to test
-		ok = false
-		log.Print("readFileStream: " + err.Error())
-		return
-	}
-	ok = true
 	return
 }
