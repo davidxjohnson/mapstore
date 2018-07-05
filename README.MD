@@ -24,8 +24,8 @@ See contents of [runtest.sh](./runtest.sh)
 ```go
 // loads stored data into an in-memory table.
 // if file does not exist, will create it and return an empty table.
-myTable, ok = NewTable("./testdata/testdata.json")
-if !ok {
+myTable, err = NewTable("./testdata/testdata.json")
+if err != nil {
   // bad path, forbidden or invalid file format
 }
 ```
@@ -35,8 +35,8 @@ if !ok {
 ```go
 // writes table content to path used to populate it.
 // this operation is usually called automatically whenever data changes.
-ok := myTable.CommitTable()
-if !ok {
+err := myTable.CommitTable()
+if err != nil {
   // forbidden, i/o level error
 }
 ```
